@@ -21,8 +21,8 @@ import java.util.List;
 @Component
 public class S3Service {
 
-    private String accessKey = "AKIAZ4BW3XD5SNUD3YFV";
-    private String secretKey = "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";
+    private String accessKey = "";
+    private String secretKey = "";
 
     public S3Service() {
 
