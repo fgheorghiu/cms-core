@@ -65,6 +65,7 @@ public class S3Service {
                 .withCredentials(new StaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .withRegion(Regions.DEFAULT_REGION)
                 .build();
+
         Bucket folder = null;
 
         if (s3.doesBucketExistV2(folderName)) {
@@ -119,7 +120,7 @@ public class S3Service {
 
         try {
             File file = convertMultiPartToFile(multipartFile);
-            String fileName = multipartFile.getName();
+            String fileName = multipartFile.getOriginalFilename();
             fileUrl += "/" + folder + "/" + fileName;
             s3.putObject(new PutObjectRequest(folder, fileName, file));
             file.delete();
@@ -163,5 +164,22 @@ public class S3Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<S3ObjectSummary> getFolderContent(String folderName) {
+        System.out.format("Objects in S3 folder %s:\n", folderName);
+
+        final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
+                .withCredentials(new StaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
+                .withRegion(Regions.DEFAULT_REGION)
+                .build();
+
+        ListObjectsV2Result result = s3.listObjectsV2(folderName);
+        List<S3ObjectSummary> objects = result.getObjectSummaries();
+        for (S3ObjectSummary os : objects) {
+            System.out.println("* " + os.getKey());
+        }
+
+        return objects;
     }
 }

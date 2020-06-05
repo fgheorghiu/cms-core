@@ -1,6 +1,7 @@
 package com.cms.controllers;
 
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.cms.entities.File;
 import com.cms.entities.Folder;
 import com.cms.services.S3Service;
@@ -53,7 +54,7 @@ public class CMSCoreController {
 
     @RequestMapping(value = "/folder", method = RequestMethod.POST)
     public ResponseEntity<String> createFolder(@RequestBody Folder folder) {
-
+        System.out.println("Folder for create: " + folder.getName());
         s3Service.createBucket(folder.getName());
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -93,5 +94,11 @@ public class CMSCoreController {
         s3Service.createBucket(folder.getUpdateName());
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/folder/content", method = RequestMethod.GET)
+    public List<S3ObjectSummary> getFolderContent(@RequestParam String folderName) {
+
+        return s3Service.getFolderContent(folderName);
     }
 }
